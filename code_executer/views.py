@@ -22,7 +22,8 @@ class CodeView(APIView):
             redirected_output = sys.stdout = io.StringIO()
 
             try:
-                exec(code_to_execute)
+                # exec(code_to_execute)
+                exec(code_to_execute, globals(), locals())
                 exec_output = redirected_output.getvalue()
                 response_data = {
                     "code": code_to_execute,
