@@ -2,26 +2,16 @@ from django.shortcuts import render
 
 # Create your views here.
 from rest_framework.views import APIView
+from rest_framework.generics import CreateAPIView
+
 from rest_framework.response import Response
 from rest_framework import status
 import sys
 import io
 
-class ExecuteCode(APIView):
-    def post(self, request, *args, **kwargs):
-        code = request.data.get('code', '')
+from .models import Code
+from .serializers import CodeSerializer
 
-        # Redirect stdout
-        backup = sys.stdout
-        sys.stdout = io.StringIO()
+class CodeView(CreateAPIView):
+    serializer_class = CodeSerializer
 
-        try:
-            exec(code)
-            output = sys.stdout.getvalue()
-        except Exception as e:
-            output = str(e)
-        finally:
-            sys.stdout.close()
-            sys.stdout = backup
-
-        return Response({"output": output}, status=status.HTTP_200_OK)
